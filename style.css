@@ -44,3 +44,12 @@ body, html {
 .selected {
     background-color: rgba(255, 255, 255, 0.2);
 }
+
+.selection-box {
+    position: absolute;
+    pointer-events: none;
+    z-index: 9999;
+    background-color: rgba(202, 238, 255, 0.3);
+  }
+  
+  
