@@ -86,7 +86,6 @@ document.addEventListener('click', (event) => {
   
   if (intersect) {
     folder.classList.add('selected');
-    clicks = 1;
     intersect = false;
   }
 });
@@ -127,7 +126,6 @@ document.addEventListener('mouseup', (event) => {
     folder.style.left = folderOffset.x + event.clientX - dragOffset.x + 'px';
     
     isDragging = false;
-    clicks = 1;
   }
 });
 // ---- folder code ----
