@@ -140,6 +140,39 @@ closeBtn.addEventListener('click', (event) => {
 });
 // ---- info screen code ----
 
+// ---- weather code ----
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition((position) => {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    getWeatherData(lat, lon);
+  });
+}
+
+function getWeatherData(lat, lon) {
+  const apiKey = '7b29be37390b450d9e743140230704';
+  const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${lat}, ${lon}&aqi=no`;
+
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      displayWeatherData(data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+}
+
+function displayWeatherData(data) {
+  const weatherWidget = document.getElementById('weather-widget');
+  const tempC = data.current.temp_c;
+  const tempF = data.current.temp_f;
+  const weather = data.current.condition.text;
+
+  weatherWidget.innerHTML = `Temperature: ${tempC} &deg;C, ${tempF} &deg;F<br>Weather: ${weather}`;
+}
+// ---- weather code ----
+
 // ---- clock code ----
 function formatAMPM(date) {
   let hours = date.getHours();

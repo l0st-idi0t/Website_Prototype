@@ -1,20 +1,10 @@
-body,
-html {
+body, html {
     height: 100%;
     margin: 0;
     padding: 0;
     background-image: url(images/background.jpg);
     background-size: contain;
     overflow: hidden;
-}
-
-#clock {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    color: #fff;
-    font-family: 'Monsterrat', sans-serif;
-    font-size: 20px;
 }
 
 .folder {
@@ -71,7 +61,7 @@ html {
     border-radius: 8px;
     background-color: rgb(240, 240, 240);
     z-index: 9999;
-    transition: transform 0.5s ease-in-out;
+    transition: transform 0.4s ease-in-out;
 }
 
 #header {
@@ -93,4 +83,15 @@ html {
     background-color: rgb(212, 21, 21);
     cursor: pointer;
     margin: 10px 0px 0px 10px;
+}
+
+.widget {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+    color: #fff;
 }
