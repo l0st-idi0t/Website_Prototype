@@ -1,7 +1,6 @@
 const clock = document.getElementById('clock');
 const folder = document.getElementById('portfolio-folder');
 const info = document.querySelector('.info');
-let clicks = 0;
 let isDragging = false;
 let dragOffset = { x: 0, y: 0 };
 let folderOffset = { x: 0, y: 0 };
@@ -70,20 +69,17 @@ document.addEventListener('mouseup', () => {
 
 // ---- folder code ----
 folder.addEventListener('click', () => {
-  clicks++;
-  if (clicks == 2) {
-      clicks = 0;
-      folder.classList.remove('selected');
-      info.style.transform = 'translate(-50%, -50%) scale(1)';
-  } else {
-      folder.classList.add('selected');
-  }
+  folder.classList.add('selected');
+});
+
+folder.addEventListener('dblclick', () => {
+  folder.classList.remove('selected');
+  info.style.transform = 'translate(-50%, -50%) scale(1)';
 });
 
 document.addEventListener('click', (event) => {
   if (!folder.contains(event.target)) {
     folder.classList.remove('selected');
-    clicks = 0;
   }
   
   if (intersect) {
