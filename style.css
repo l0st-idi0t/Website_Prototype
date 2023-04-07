@@ -14,8 +14,6 @@ body, html {
     transform: translate(-50%, -50%); 
     */
     position: fixed;
-    top: 127px;
-    left: 224px;
     width: auto;
     height: 10%;
     display: flex;
@@ -35,6 +33,21 @@ body, html {
 .folder:hover {
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.2);
+}
+
+.inner:hover {
+    cursor: pointer;
+    background-color: rgba(188, 187, 187, 0.2);
+}
+
+#portfolio-folder {
+    top: 127px;
+    left: 224px;
+}
+
+#rickroll {
+    top: 100px;
+    left: 80px;
 }
 
 .selected {
