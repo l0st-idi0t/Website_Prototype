@@ -19,6 +19,26 @@ let intersect = false;
 //hehe you don't get to select any text
 document.body.style.userSelect = 'none';
 
+// ---- folder class ----
+class Folder {
+  constructor(folderElement) {
+    this.folderElement = folderElement;
+    this.openable = false;
+    this.outside = false;
+
+    this.folderElement.addEventListener('click', (event) => {
+      this.folderElement.classList.add('selected');
+      event.preventDefault();
+    });
+
+    
+  }
+}
+
+// create an array of folder objects
+const folders = Array.from(document.querySelectorAll('.folder')).map(folderElement => new Folder(folderElement));
+// ---- folder class ----
+
 // ---- selection box code ----
 document.addEventListener('mousedown', (event) => {
   startSelection = true;
