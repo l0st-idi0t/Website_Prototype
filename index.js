@@ -24,7 +24,6 @@ document.addEventListener('mousedown', (event) => {
   startSelection = true;
   startX = event.clientX;
   startY = event.clientY;
-  event.preventDefault();
 });
 
 document.addEventListener('mousemove', (event) => {
@@ -56,9 +55,6 @@ document.addEventListener('mousemove', (event) => {
       folder.classList.add('selected');
     }
   }
-
-  event.preventDefault();
-  
 });
 
 document.addEventListener('mouseup', (event) => {
