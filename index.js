@@ -141,13 +141,24 @@ closeBtn.addEventListener('click', (event) => {
 // ---- info screen code ----
 
 // ---- weather code ----
-if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition((position) => {
-    const lat = position.coords.latitude;
-    const lon = position.coords.longitude;
-    getWeatherData(lat, lon);
-  });
+const weatherWidget = document.getElementById('weather-widget');
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      getWeatherData(lat, lon);
+      weatherWidget.style.display = 'flex';
+    }, () => {
+      alert("Cannot get your location for weather.");
+    });
+  } else {
+    alert("GeoLocation is not supported by your browser.");
+  }
 }
+
+getLocation();
 
 function getWeatherData(lat, lon) {
   const apiKey = '7b29be37390b450d9e743140230704';
@@ -164,12 +175,20 @@ function getWeatherData(lat, lon) {
 }
 
 function displayWeatherData(data) {
-  const weatherWidget = document.getElementById('weather-widget');
   const tempC = data.current.temp_c;
   const tempF = data.current.temp_f;
-  const weather = data.current.condition.text;
+  const icon = data.current.condition.icon;
 
-  weatherWidget.innerHTML = `Temperature: ${tempC} &deg;C, ${tempF} &deg;F<br>Weather: ${weather}`;
+  const iconElem = document.getElementById('weather-icon');
+  const tempElem = document.getElementById('weather-temp');
+
+  iconElem.src = 'https:' + icon;
+  tempElem.innerHTML = `${tempC}°C / ${tempF}°F`;
+
+  setTimeout(() => {
+    iconElem.style.animation = 'fadein 1s ease-in-out forwards';
+    tempElem.style.animation = 'fadein 1s ease-in-out forwards';
+  }, 300);
 }
 // ---- weather code ----
 

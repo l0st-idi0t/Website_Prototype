@@ -86,12 +86,67 @@ body, html {
 }
 
 .widget {
-    position: absolute;
-    top: 10px;
-    left: 10px;
+    position: fixed;
+    left: 50%;
+    top: 5%;
+    transform: translate(-50%, 0%);
+    align-items: center;
     font-family: 'Montserrat', sans-serif;
     display: flex;
     flex-direction: column;
     font-size: 20px;
     color: #fff;
+    width: 20%;
+}
+
+#weather-widget {
+    width: 100%;
+    height: 50px;
+    background-color: rgba(77, 172, 255, 0.4);
+    border-radius: 50px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    animation: wide 0.8s ease-out;
+    display: none;
+    justify-content: space-evenly;
+}
+
+#weather-widget img {
+    opacity: 0;
+    max-width: 35px;
+    max-height: 35px;
+    height: 100%;
+    aspect-ratio: 1/1;
+    object-fit: contain;
+    border-radius: 50%;
+    background-color: rgb(245, 245, 245);
+    box-shadow: 0px 2px 3px rgb(0, 0, 0, 0.2);
+}
+
+#weather-widget p {
+    opacity: 0;
+    margin-left: 2%;
+}
+
+#clock {
+    margin-top: 10px;
+}
+
+@keyframes wide {
+    0% {
+        width: 0%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
