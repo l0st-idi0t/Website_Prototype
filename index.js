@@ -9,7 +9,9 @@ let folderSize = { width: folder.offsetWidth, height: folder.offsetHeight };
 let ghostFolder = null;
 
 //selection box
-let selectionBox = null;
+const selectionBox = document.createElement('div');
+selectionBox.classList.add('selection-box');
+document.body.appendChild(selectionBox);
 let startSelection = false;
 let startX, startY;
 let intersect = false;
@@ -22,9 +24,7 @@ document.addEventListener('mousedown', (event) => {
   startSelection = true;
   startX = event.clientX;
   startY = event.clientY;
-  selectionBox = document.createElement('div');
-  selectionBox.classList.add('selection-box');
-  document.body.appendChild(selectionBox);
+  event.preventDefault();
 });
 
 document.addEventListener('mousemove', (event) => {
@@ -56,26 +56,32 @@ document.addEventListener('mousemove', (event) => {
       folder.classList.add('selected');
     }
   }
+
+  event.preventDefault();
   
 });
 
-document.addEventListener('mouseup', () => {
+document.addEventListener('mouseup', (event) => {
   startSelection = false;
-  if (selectionBox) {
-    selectionBox.remove();
-    selectionBox = null;
-  }
+  // reset selection box
+  selectionBox.style.left = 0;
+  selectionBox.style.top = 0;
+  selectionBox.style.width = 0;
+  selectionBox.style.height = 0;
+  event.preventDefault();
 });
 // ---- selection box code ----
 
 // ---- folder code ----
-folder.addEventListener('click', () => {
+folder.addEventListener('click', (event) => {
   folder.classList.add('selected');
+  event.preventDefault();
 });
 
-folder.addEventListener('dblclick', () => {
+folder.addEventListener('dblclick', (event) => {
   folder.classList.remove('selected');
   info.style.transform = 'translate(-50%, -50%) scale(1)';
+  event.preventDefault();
 });
 
 document.addEventListener('click', (event) => {
@@ -87,6 +93,7 @@ document.addEventListener('click', (event) => {
     folder.classList.add('selected');
     intersect = false;
   }
+  event.preventDefault();
 });
 
 folder.addEventListener('dragstart', (event) => {
@@ -123,17 +130,17 @@ document.addEventListener('mouseup', (event) => {
     // Move the original folder to the final position
     folder.style.top = folderOffset.y + event.clientY - dragOffset.y + 'px';
     folder.style.left = folderOffset.x + event.clientX - dragOffset.x + 'px';
-
-    console.log(folder.style.top, folder.style.left);
     
     isDragging = false;
+    event.preventDefault();
   }
 });
 // ---- folder code ----
 
 // ---- info screen code ----
-closeBtn.addEventListener('click', () => {
+closeBtn.addEventListener('click', (event) => {
   info.style.transform = 'translate(-50%, -50%) scale(0)';
+  event.preventDefault();
 });
 // ---- info screen code ----
 
