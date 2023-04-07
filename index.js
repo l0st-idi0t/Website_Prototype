@@ -23,14 +23,36 @@ document.body.style.userSelect = 'none';
 class Folder {
   constructor(folderElement) {
     this.folderElement = folderElement;
+    this.dragOffset = { x: 0, y: 0 };
+    this.folderOffset = { x: 0, y: 0 };
+    this.folderSize = { width: this.folderElement.offsetWidth, height: this.folderElement.offsetHeight };
     this.openable = false;
     this.outside = false;
+    this.intersected = false;
+    this.isDragging = false;
+    this.ghostFolder = null;
 
     this.folderElement.addEventListener('click', (event) => {
       this.folderElement.classList.add('selected');
       event.preventDefault();
     });
 
+    this.folderElement.addEventListener('dragstart', (event) => {
+      this.isDragging = true;
+      this.dragOffset.x = event.clientX;
+      this.dragOffset.y = event.clientY;
+      this.folderOffset.x = this.folderElement.offsetLeft;
+      this.folderOffset.y = this.folderElement.offsetTop;
+    
+      // Create a ghost folder with the same size as the original folder
+      ghostFolder = document.createElement('div');
+      ghostFolder.classList.add('folder', 'ghost');
+      ghostFolder.style.width = folderSize.width + 'px';
+      ghostFolder.style.height = folderSize.height + 'px';
+      ghostFolder.style.top = folderOffset.y + 'px';
+      ghostFolder.style.left = folderOffset.x + 'px';
+      document.body.appendChild(ghostFolder);
+    });
     
   }
 }
@@ -71,6 +93,20 @@ document.addEventListener('mousemove', (event) => {
                         folderRect.bottom < selectionBoxRect.top || 
                         folderRect.top > selectionBoxRect.bottom);
 
+    // for (const folder of folders) {
+    //   const folderRect = folder.getBoundingClientRect();
+    //   const selectionBoxRect = selectionBox.getBoundingClientRect();
+    //   intersect = !(folderRect.right < selectionBoxRect.left || 
+    //                     folderRect.left > selectionBoxRect.right || 
+    //                     folderRect.bottom < selectionBoxRect.top || 
+    //                     folderRect.top > selectionBoxRect.bottom);
+
+    //   if (intersect) {
+    //     folder.classList.add('selected');
+    //     folder.intersected = true;
+    //   }
+    // }
+
     if (intersect) {
       folder.classList.add('selected');
     }
@@ -101,6 +137,17 @@ folder.addEventListener('dblclick', (event) => {
 });
 
 document.addEventListener('click', (event) => {
+  // for (const folder of folders) {
+  //   if (!folder.contains(event.target)) {
+  //     folder.classList.remove('selected');
+  //   }
+
+  //   if (folder.intersected) {
+  //     folder.classList.add('selected');
+  //     folder.intersected = false;
+  //   }
+  // }
+
   if (!folder.contains(event.target)) {
     folder.classList.remove('selected');
   }
