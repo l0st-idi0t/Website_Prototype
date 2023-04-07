@@ -123,6 +123,8 @@ document.addEventListener('mouseup', (event) => {
     // Move the original folder to the final position
     folder.style.top = folderOffset.y + event.clientY - dragOffset.y + 'px';
     folder.style.left = folderOffset.x + event.clientX - dragOffset.x + 'px';
+
+    console.log(folder.style.top, folder.style.left);
     
     isDragging = false;
   }

@@ -18,10 +18,14 @@ html {
 }
 
 .folder {
-    position: absolute;
+    /* position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); 
+    */
+    position: fixed;
+    top: 127px;
+    left: 224px;
     width: auto;
     height: 10%;
     display: flex;
