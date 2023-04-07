@@ -1,6 +1,7 @@
 const clock = document.getElementById('clock');
 const folder = document.getElementById('portfolio-folder');
 const info = document.querySelector('.info');
+const closeBtn = document.getElementById('close');
 let isDragging = false;
 let dragOffset = { x: 0, y: 0 };
 let folderOffset = { x: 0, y: 0 };
@@ -127,6 +128,12 @@ document.addEventListener('mouseup', (event) => {
   }
 });
 // ---- folder code ----
+
+// ---- info screen code ----
+closeBtn.addEventListener('click', () => {
+  info.style.transform = 'translate(-50%, -50%) scale(0)';
+});
+// ---- info screen code ----
 
 // ---- clock code ----
 function formatAMPM(date) {
