@@ -58,7 +58,7 @@ class Folder {
 }
 
 // create an array of folder objects
-const folders = Array.from(document.querySelectorAll('.folder')).map(folderElement => new Folder(folderElement));
+//const folders = Array.from(document.querySelectorAll('.folder')).map(folderElement => new Folder(folderElement));
 // ---- folder class ----
 
 // ---- selection box code ----
