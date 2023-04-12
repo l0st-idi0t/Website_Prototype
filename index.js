@@ -43,6 +43,7 @@ class Folder {
       this.dragOffset.y = event.clientY;
       this.folderOffset.x = this.folderElement.offsetLeft;
       this.folderOffset.y = this.folderElement.offsetTop;
+      this.infoElement = null;
     
       // Create a ghost folder with the same size as the original folder
       ghostFolder = document.createElement('div');
@@ -53,9 +54,46 @@ class Folder {
       ghostFolder.style.left = folderOffset.x + 'px';
       document.body.appendChild(ghostFolder);
     });
+
+    this.folderElement.addEventListener('click', (event) => {
+      this.folderElement.classList.add('selected');
+      event.preventDefault();
+    });
+    
+    this.folderElement.addEventListener('dblclick', (event) => {
+      folder.classList.remove('selected');
+      if (this.openable && this.infoElement) {
+        this.infoElement.style.transform = 'translate(-50%, -50%) scale(1)';
+      }
+      event.preventDefault();
+    });
     
   }
-}
+
+  // create info element
+  createInfoElement(name) {
+    this.infoElement = document.createElement('div');
+    this.infoElement.classList.add('info');
+    this.infoElement.innerHTML = `
+      <div class="info-header">
+        <h2>${name}</h2>
+        <button id="close">Close</button>
+      </div>
+      <div class="info-content">
+        <p>Some text</p>
+      </div>
+    `;
+    document.body.appendChild(this.infoElement);
+
+    let closeBtn = this.infoElement.getElementById('close');
+
+    closeBtn.addEventListener('click', (event) => {
+      this.infoElement.style.transform = 'translate(-50%, -50%) scale(0)';
+      event.preventDefault();
+    });
+  }
+  
+} 
 
 // create an array of folder objects
 //const folders = Array.from(document.querySelectorAll('.folder')).map(folderElement => new Folder(folderElement));
