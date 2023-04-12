@@ -46,13 +46,13 @@ class Folder {
       this.infoElement = null;
     
       // Create a ghost folder with the same size as the original folder
-      ghostFolder = document.createElement('div');
-      ghostFolder.classList.add('folder', 'ghost');
-      ghostFolder.style.width = folderSize.width + 'px';
-      ghostFolder.style.height = folderSize.height + 'px';
-      ghostFolder.style.top = folderOffset.y + 'px';
-      ghostFolder.style.left = folderOffset.x + 'px';
-      document.body.appendChild(ghostFolder);
+      this.ghostFolder = document.createElement('div');
+      this.ghostFolder.classList.add('folder', 'ghost');
+      this.ghostFolder.style.width = this.folderSize.width + 'px';
+      this.ghostFolder.style.height = this.folderSize.height + 'px';
+      this.ghostFolder.style.top = this.folderOffset.y + 'px';
+      this.ghostFolder.style.left = this.folderOffset.x + 'px';
+      document.body.appendChild(this.ghostFolder);
     });
 
     this.folderElement.addEventListener('click', (event) => {
@@ -66,6 +66,29 @@ class Folder {
         this.infoElement.style.transform = 'translate(-50%, -50%) scale(1)';
       }
       event.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (event) => {
+      if (this.isDragging) {
+        startSelection = false;
+        // Move the ghost folder with the mouse
+        this.ghostFolder.style.top = this.folderOffset.y + event.clientY - this.dragOffset.y + 'px';
+        this.ghostFolder.style.left = this.folderOffset.x + event.clientX - this.dragOffset.x + 'px';
+      }
+    });
+    
+    document.addEventListener('mouseup', (event) => {
+      if (this.isDragging) {
+        // Remove the ghost folder
+        this.ghostFolder.parentNode.removeChild(this.ghostFolder);
+        
+        // Move the original folder to the final position
+        this.folderElement.style.top = this.folderOffset.y + event.clientY - this.dragOffset.y + 'px';
+        this.folderElement.style.left = this.folderOffset.x + event.clientX - this.dragOffset.x + 'px';
+        
+        this.isDragging = false;
+        event.preventDefault();
+      }
     });
     
   }
@@ -95,8 +118,8 @@ class Folder {
   
 } 
 
-// create an array of folder objects
-//const folders = Array.from(document.querySelectorAll('.folder')).map(folderElement => new Folder(folderElement));
+//create an array of folder objects
+const folders = Array.from(document.querySelectorAll('.folder')).map(folderElement => new Folder(folderElement));
 // ---- folder class ----
 
 // ---- selection box code ----
@@ -124,30 +147,30 @@ document.addEventListener('mousemove', (event) => {
     selectionBox.style.height = `${height}px`;
 
     // Check if the folder intersects with the selection box
-    const folderRect = folder.getBoundingClientRect();
-    const selectionBoxRect = selectionBox.getBoundingClientRect();
-    intersect = !(folderRect.right < selectionBoxRect.left || 
-                        folderRect.left > selectionBoxRect.right || 
-                        folderRect.bottom < selectionBoxRect.top || 
-                        folderRect.top > selectionBoxRect.bottom);
-
-    // for (const folder of folders) {
-    //   const folderRect = folder.getBoundingClientRect();
-    //   const selectionBoxRect = selectionBox.getBoundingClientRect();
-    //   intersect = !(folderRect.right < selectionBoxRect.left || 
+    // const folderRect = folder.getBoundingClientRect();
+    // const selectionBoxRect = selectionBox.getBoundingClientRect();
+    // intersect = !(folderRect.right < selectionBoxRect.left || 
     //                     folderRect.left > selectionBoxRect.right || 
     //                     folderRect.bottom < selectionBoxRect.top || 
     //                     folderRect.top > selectionBoxRect.bottom);
 
-    //   if (intersect) {
-    //     folder.classList.add('selected');
-    //     folder.intersected = true;
-    //   }
-    // }
+    for (const folder of folders) {
+      const folderRect = folder.getBoundingClientRect();
+      const selectionBoxRect = selectionBox.getBoundingClientRect();
+      intersect = !(folderRect.right < selectionBoxRect.left || 
+                        folderRect.left > selectionBoxRect.right || 
+                        folderRect.bottom < selectionBoxRect.top || 
+                        folderRect.top > selectionBoxRect.bottom);
 
-    if (intersect) {
-      folder.classList.add('selected');
+      if (intersect) {
+        folder.classList.add('selected');
+        folder.intersected = true;
+      }
     }
+
+    // if (intersect) {
+    //   folder.classList.add('selected');
+    // }
   }
 });
 
@@ -163,79 +186,79 @@ document.addEventListener('mouseup', (event) => {
 // ---- selection box code ----
 
 // ---- folder code ----
-folder.addEventListener('click', (event) => {
-  folder.classList.add('selected');
-  event.preventDefault();
-});
+// folder.addEventListener('click', (event) => {
+//   folder.classList.add('selected');
+//   event.preventDefault();
+// });
 
-folder.addEventListener('dblclick', (event) => {
-  folder.classList.remove('selected');
-  info.style.transform = 'translate(-50%, -50%) scale(1)';
-  event.preventDefault();
-});
+// folder.addEventListener('dblclick', (event) => {
+//   folder.classList.remove('selected');
+//   info.style.transform = 'translate(-50%, -50%) scale(1)';
+//   event.preventDefault();
+// });
 
 document.addEventListener('click', (event) => {
-  // for (const folder of folders) {
-  //   if (!folder.contains(event.target)) {
-  //     folder.classList.remove('selected');
-  //   }
+  for (const folder of folders) {
+    if (!folder.contains(event.target)) {
+      folder.classList.remove('selected');
+    }
 
-  //   if (folder.intersected) {
-  //     folder.classList.add('selected');
-  //     folder.intersected = false;
-  //   }
+    if (folder.intersected) {
+      folder.classList.add('selected');
+      folder.intersected = false;
+    }
+  }
+
+  // if (!folder.contains(event.target)) {
+  //   folder.classList.remove('selected');
   // }
-
-  if (!folder.contains(event.target)) {
-    folder.classList.remove('selected');
-  }
   
-  if (intersect) {
-    folder.classList.add('selected');
-    intersect = false;
-  }
+  // if (intersect) {
+  //   folder.classList.add('selected');
+  //   intersect = false;
+  // }
   event.preventDefault();
 });
 
-folder.addEventListener('dragstart', (event) => {
-  isDragging = true;
-  dragOffset.x = event.clientX;
-  dragOffset.y = event.clientY;
-  folderOffset.x = folder.offsetLeft;
-  folderOffset.y = folder.offsetTop;
+// folder.addEventListener('dragstart', (event) => {
+//   isDragging = true;
+//   dragOffset.x = event.clientX;
+//   dragOffset.y = event.clientY;
+//   folderOffset.x = folder.offsetLeft;
+//   folderOffset.y = folder.offsetTop;
 
-  // Create a ghost folder with the same size as the original folder
-  ghostFolder = document.createElement('div');
-  ghostFolder.classList.add('folder', 'ghost');
-  ghostFolder.style.width = folderSize.width + 'px';
-  ghostFolder.style.height = folderSize.height + 'px';
-  ghostFolder.style.top = folderOffset.y + 'px';
-  ghostFolder.style.left = folderOffset.x + 'px';
-  document.body.appendChild(ghostFolder);
-});
+//   // Create a ghost folder with the same size as the original folder
+//   ghostFolder = document.createElement('div');
+//   ghostFolder.classList.add('folder', 'ghost');
+//   ghostFolder.style.width = folderSize.width + 'px';
+//   ghostFolder.style.height = folderSize.height + 'px';
+//   ghostFolder.style.top = folderOffset.y + 'px';
+//   ghostFolder.style.left = folderOffset.x + 'px';
+//   document.body.appendChild(ghostFolder);
+// });
 
-document.addEventListener('mousemove', (event) => {
-  if (isDragging) {
-    startSelection = false;
-    // Move the ghost folder with the mouse
-    ghostFolder.style.top = folderOffset.y + event.clientY - dragOffset.y + 'px';
-    ghostFolder.style.left = folderOffset.x + event.clientX - dragOffset.x + 'px';
-  }
-});
+// document.addEventListener('mousemove', (event) => {
+//   if (isDragging) {
+//     startSelection = false;
+//     // Move the ghost folder with the mouse
+//     ghostFolder.style.top = folderOffset.y + event.clientY - dragOffset.y + 'px';
+//     ghostFolder.style.left = folderOffset.x + event.clientX - dragOffset.x + 'px';
+//   }
+// });
 
-document.addEventListener('mouseup', (event) => {
-  if (isDragging) {
-    // Remove the ghost folder
-    ghostFolder.parentNode.removeChild(ghostFolder);
+// document.addEventListener('mouseup', (event) => {
+//   if (isDragging) {
+//     // Remove the ghost folder
+//     ghostFolder.parentNode.removeChild(ghostFolder);
     
-    // Move the original folder to the final position
-    folder.style.top = folderOffset.y + event.clientY - dragOffset.y + 'px';
-    folder.style.left = folderOffset.x + event.clientX - dragOffset.x + 'px';
+//     // Move the original folder to the final position
+//     folder.style.top = folderOffset.y + event.clientY - dragOffset.y + 'px';
+//     folder.style.left = folderOffset.x + event.clientX - dragOffset.x + 'px';
     
-    isDragging = false;
-    event.preventDefault();
-  }
-});
+//     isDragging = false;
+//     event.preventDefault();
+//   }
+// });
 // ---- folder code ----
 
 // ---- info screen code ----
