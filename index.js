@@ -155,7 +155,7 @@ document.addEventListener('mousemove', (event) => {
     //                     folderRect.top > selectionBoxRect.bottom);
 
     for (const folder of folders) {
-      const folderRect = folder.getBoundingClientRect();
+      const folderRect = folder.folderElement.getBoundingClientRect();
       const selectionBoxRect = selectionBox.getBoundingClientRect();
       intersect = !(folderRect.right < selectionBoxRect.left || 
                         folderRect.left > selectionBoxRect.right || 
@@ -163,7 +163,7 @@ document.addEventListener('mousemove', (event) => {
                         folderRect.top > selectionBoxRect.bottom);
 
       if (intersect) {
-        folder.classList.add('selected');
+        folder.folderElement.classList.add('selected');
         folder.intersected = true;
       }
     }
@@ -199,18 +199,14 @@ document.addEventListener('mouseup', (event) => {
 
 document.addEventListener('click', (event) => {
   for (const folder of folders) {
-    console.log(folder);
-
-    if (!folder.contains(event.target)) {
-      folder.classList.remove('selected');
+    if (!folder.folderElement.contains(event.target)) {
+      folder.folderElement.classList.remove('selected');
     }
 
     if (folder.intersected) {
-      folder.classList.add('selected');
+      folder.folderElement.classList.add('selected');
       folder.intersected = false;
     }
-
-    console.log(folder);
   }
 
   // if (!folder.contains(event.target)) {
