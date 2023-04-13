@@ -199,6 +199,8 @@ document.addEventListener('mouseup', (event) => {
 
 document.addEventListener('click', (event) => {
   for (const folder of folders) {
+    console.log(folder);
+
     if (!folder.contains(event.target)) {
       folder.classList.remove('selected');
     }
@@ -207,6 +209,8 @@ document.addEventListener('click', (event) => {
       folder.classList.add('selected');
       folder.intersected = false;
     }
+
+    console.log(folder);
   }
 
   // if (!folder.contains(event.target)) {
