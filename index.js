@@ -26,7 +26,7 @@ class Folder {
     this.dragOffset = { x: 0, y: 0 };
     this.folderOffset = { x: 0, y: 0 };
     this.folderSize = { width: this.folderElement.offsetWidth, height: this.folderElement.offsetHeight };
-    this.openable = false;
+    this.openable = folderElement.getAttribute('openable') === 'true';
     this.outside = false;
     this.intersected = false;
     this.isDragging = false;
