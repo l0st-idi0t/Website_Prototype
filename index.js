@@ -1,6 +1,4 @@
 const clock = document.getElementById('clock');
-const info = document.querySelector('.info');
-const closeBtn = document.getElementById('close');
 
 //selection box
 const selectionBox = document.createElement('div');
@@ -31,6 +29,17 @@ class Folder {
       const closeBtn = this.infoElement.querySelector('input[type="button"]');
 
       closeBtn.addEventListener('click', (event) => {
+        const videos = this.infoElement.querySelectorAll('video');
+        
+        if (videos.length > 0) {
+          for (const video of videos) {
+            if (video.parentNode.parentNode == this.infoElement) {
+              video.pause();
+              video.currentTime = 0;
+            }
+          }
+        }
+
         this.infoElement.style.transform = 'translate(-50%, -50%) scale(0)';
         event.preventDefault();
       });
@@ -61,15 +70,21 @@ class Folder {
       this.ghostFolder.style.left = this.folderOffset.x + 'px';
       document.body.appendChild(this.ghostFolder);
     });
-
-    this.folderElement.addEventListener('click', (event) => {
-      this.folderElement.classList.add('selected');
-      event.preventDefault();
-    });
     
     this.folderElement.addEventListener('dblclick', (event) => {
       this.folderElement.classList.remove('selected');
       if (this.openable && this.infoElement) {
+        const videos = this.infoElement.querySelectorAll('video');
+        
+        if (videos.length > 0) {
+          for (const video of videos) {
+            if (video.parentNode.parentNode == this.infoElement) {
+              video.play();
+            }
+          }
+        }
+
+        this.infoElement.style.visibility = 'visible';
         this.infoElement.style.transform = 'translate(-50%, -50%) scale(1)';
       }
       event.preventDefault();

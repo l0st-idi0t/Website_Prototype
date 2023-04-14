@@ -23,14 +23,22 @@
         </div>
         <div class="info" id="main-info">
             <div id="header">
-                <input type="button" class="close"/>
+                <input type="button" />
             </div>
             <div id="content">
-                <div id="info">
-                    <div class="folder inner" id="rickroll" openable="false">
-                        <img src="images/folder.png" alt="Folder">
-                        <span id="folderText">Click Me!</span>
-                    </div>
+                <div class="folder inner" id="rickroll" openable="true" link="rickroll-vid">
+                    <img src="images/folder.png" alt="Folder">
+                    <span id="folderText">Open Me!</span>
+                </div>
+            </div>
+
+            <div id="rickroll-vid" class="info" openable="false">
+                <div id="header">
+                    <input type="button" />
+                </div>
+
+                <div id="content">
+                    <video src="images/rickroll.mp4" allowfullscreen controls></video>
                 </div>
             </div>
         </div>
