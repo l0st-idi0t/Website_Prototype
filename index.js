@@ -1,12 +1,6 @@
 const clock = document.getElementById('clock');
-const folder = document.getElementById('portfolio-folder');
 const info = document.querySelector('.info');
 const closeBtn = document.getElementById('close');
-let isDragging = false;
-let dragOffset = { x: 0, y: 0 };
-let folderOffset = { x: 0, y: 0 };
-let folderSize = { width: folder.offsetWidth, height: folder.offsetHeight };
-let ghostFolder = null;
 
 //selection box
 const selectionBox = document.createElement('div');
@@ -14,7 +8,6 @@ selectionBox.classList.add('selection-box');
 document.body.appendChild(selectionBox);
 let startSelection = false;
 let startX, startY;
-let intersect = false;
 
 //hehe you don't get to select any text
 document.body.style.userSelect = 'none';
@@ -27,10 +20,21 @@ class Folder {
     this.folderOffset = { x: 0, y: 0 };
     this.folderSize = { width: this.folderElement.offsetWidth, height: this.folderElement.offsetHeight };
     this.openable = folderElement.getAttribute('openable') === 'true';
-    this.outside = false;
+    this.infoElement = null;
     this.intersected = false;
     this.isDragging = false;
     this.ghostFolder = null;
+
+    // get linked info element
+    if (this.openable) {
+      this.infoElement = document.getElementById(folderElement.getAttribute('link'));
+      const closeBtn = this.infoElement.querySelector('input[type="button"]');
+
+      closeBtn.addEventListener('click', (event) => {
+        this.infoElement.style.transform = 'translate(-50%, -50%) scale(0)';
+        event.preventDefault();
+      });
+    }
 
     this.folderElement.addEventListener('click', (event) => {
       this.folderElement.classList.add('selected');
@@ -38,12 +42,15 @@ class Folder {
     });
 
     this.folderElement.addEventListener('dragstart', (event) => {
+      if (!this.openable) {
+        return;
+      }
+
       this.isDragging = true;
       this.dragOffset.x = event.clientX;
       this.dragOffset.y = event.clientY;
       this.folderOffset.x = this.folderElement.offsetLeft;
       this.folderOffset.y = this.folderElement.offsetTop;
-      this.infoElement = null;
     
       // Create a ghost folder with the same size as the original folder
       this.ghostFolder = document.createElement('div');
@@ -61,7 +68,7 @@ class Folder {
     });
     
     this.folderElement.addEventListener('dblclick', (event) => {
-      folder.classList.remove('selected');
+      this.folderElement.classList.remove('selected');
       if (this.openable && this.infoElement) {
         this.infoElement.style.transform = 'translate(-50%, -50%) scale(1)';
       }
@@ -92,29 +99,6 @@ class Folder {
     });
     
   }
-
-  // create info element
-  createInfoElement(name) {
-    this.infoElement = document.createElement('div');
-    this.infoElement.classList.add('info');
-    this.infoElement.innerHTML = `
-      <div class="info-header">
-        <h2>${name}</h2>
-        <button id="close">Close</button>
-      </div>
-      <div class="info-content">
-        <p>Some text</p>
-      </div>
-    `;
-    document.body.appendChild(this.infoElement);
-
-    let closeBtn = this.infoElement.getElementById('close');
-
-    closeBtn.addEventListener('click', (event) => {
-      this.infoElement.style.transform = 'translate(-50%, -50%) scale(0)';
-      event.preventDefault();
-    });
-  }
   
 } 
 
@@ -130,9 +114,12 @@ document.addEventListener('mousedown', (event) => {
 });
 
 document.addEventListener('mousemove', (event) => {
-  if (isDragging) {
-    startSelection = false;
-    intersect = false;
+  for (const folder of folders) {
+    if (folder.isDragging) {
+      startSelection = false;
+      folder.intersected = false;
+      return;
+    }
   }
 
   if (startSelection) {
@@ -145,14 +132,6 @@ document.addEventListener('mousemove', (event) => {
     selectionBox.style.top = `${y}px`;
     selectionBox.style.width = `${width}px`;
     selectionBox.style.height = `${height}px`;
-
-    // Check if the folder intersects with the selection box
-    // const folderRect = folder.getBoundingClientRect();
-    // const selectionBoxRect = selectionBox.getBoundingClientRect();
-    // intersect = !(folderRect.right < selectionBoxRect.left || 
-    //                     folderRect.left > selectionBoxRect.right || 
-    //                     folderRect.bottom < selectionBoxRect.top || 
-    //                     folderRect.top > selectionBoxRect.bottom);
 
     for (const folder of folders) {
       const folderRect = folder.folderElement.getBoundingClientRect();
@@ -167,10 +146,6 @@ document.addEventListener('mousemove', (event) => {
         folder.intersected = true;
       }
     }
-
-    // if (intersect) {
-    //   folder.classList.add('selected');
-    // }
   }
 });
 
@@ -185,18 +160,7 @@ document.addEventListener('mouseup', (event) => {
 });
 // ---- selection box code ----
 
-// ---- folder code ----
-// folder.addEventListener('click', (event) => {
-//   folder.classList.add('selected');
-//   event.preventDefault();
-// });
-
-// folder.addEventListener('dblclick', (event) => {
-//   folder.classList.remove('selected');
-//   info.style.transform = 'translate(-50%, -50%) scale(1)';
-//   event.preventDefault();
-// });
-
+// ---- folder click code ----
 document.addEventListener('click', (event) => {
   for (const folder of folders) {
     if (!folder.folderElement.contains(event.target)) {
@@ -208,65 +172,9 @@ document.addEventListener('click', (event) => {
       folder.intersected = false;
     }
   }
-
-  // if (!folder.contains(event.target)) {
-  //   folder.classList.remove('selected');
-  // }
-  
-  // if (intersect) {
-  //   folder.classList.add('selected');
-  //   intersect = false;
-  // }
   event.preventDefault();
 });
-
-// folder.addEventListener('dragstart', (event) => {
-//   isDragging = true;
-//   dragOffset.x = event.clientX;
-//   dragOffset.y = event.clientY;
-//   folderOffset.x = folder.offsetLeft;
-//   folderOffset.y = folder.offsetTop;
-
-//   // Create a ghost folder with the same size as the original folder
-//   ghostFolder = document.createElement('div');
-//   ghostFolder.classList.add('folder', 'ghost');
-//   ghostFolder.style.width = folderSize.width + 'px';
-//   ghostFolder.style.height = folderSize.height + 'px';
-//   ghostFolder.style.top = folderOffset.y + 'px';
-//   ghostFolder.style.left = folderOffset.x + 'px';
-//   document.body.appendChild(ghostFolder);
-// });
-
-// document.addEventListener('mousemove', (event) => {
-//   if (isDragging) {
-//     startSelection = false;
-//     // Move the ghost folder with the mouse
-//     ghostFolder.style.top = folderOffset.y + event.clientY - dragOffset.y + 'px';
-//     ghostFolder.style.left = folderOffset.x + event.clientX - dragOffset.x + 'px';
-//   }
-// });
-
-// document.addEventListener('mouseup', (event) => {
-//   if (isDragging) {
-//     // Remove the ghost folder
-//     ghostFolder.parentNode.removeChild(ghostFolder);
-    
-//     // Move the original folder to the final position
-//     folder.style.top = folderOffset.y + event.clientY - dragOffset.y + 'px';
-//     folder.style.left = folderOffset.x + event.clientX - dragOffset.x + 'px';
-    
-//     isDragging = false;
-//     event.preventDefault();
-//   }
-// });
-// ---- folder code ----
-
-// ---- info screen code ----
-closeBtn.addEventListener('click', (event) => {
-  info.style.transform = 'translate(-50%, -50%) scale(0)';
-  event.preventDefault();
-});
-// ---- info screen code ----
+// ---- folder click code ----
 
 // ---- weather code ----
 const weatherWidget = document.getElementById('weather-widget');
